@@ -17,13 +17,22 @@
 
     <?php
       if (isset($_GET["phone"])) {
-        $details_file_name = '../protected/details.csv';
+        $details_csv_file_name = '../protected/details.csv';
+        $details_xlsx_file_name = '../protected/details.xlsx';
 
         $name = $_GET["name"];
         $phone = $_GET["phone"];
-        $details_string = $name . ',' . $phone . "\n";
+        $details_string = $name . ',' . $phone . ',' . mt_rand(1,10000000)/100 . "\n";
 
-        file_put_contents($details_file_name, $details_string, FILE_APPEND);
+        file_put_contents($details_csv_file_name, $details_string, FILE_APPEND);
+
+
+        include '..\PHPExcel-1.8\Classes\PHPExcel\IOFactory.php';
+
+        $objReader = PHPExcel_IOFactory::createReader('CSV');
+        $objPHPExcel = $objReader->load($details_csv_file_name);
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save($details_xlsx_file_name);
       }
     ?>
 
